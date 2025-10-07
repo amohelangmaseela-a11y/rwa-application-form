@@ -3,7 +3,7 @@
 $host = "localhost";
 $user = "root";      // Default username for local MySQL
 $pass = "";          // No password
-$db   = "applications"; // Your database name
+$db   = "call_center_app"; // Your database name
 
 // Connect to MySQL
 $conn = new mysqli($host, $user, $pass, $db);
@@ -47,7 +47,29 @@ $stmt->bind_param("ssssssssssi",
 
 // Execute
 if ($stmt->execute()) {
-    echo "<h2 style='text-align:center; color: green;'>✅ Application submitted successfully!</h2>";
+    // Prepare email content
+    $to = "amohelangagnesmaseela@gmail.com";
+    $subject = "New Call Center Application from $fullName";
+    $body = "
+    Full Name: $fullName\n
+    Email: $email\n
+    Phone: $phone\n
+    Location: $location\n
+    Languages: $languages\n
+    Experience: $experience\n
+    Experience Description: $experienceDescription\n
+    Motivation: $motivation\n
+    Resume URL: $resume\n
+    Availability: $availability\n
+    Acknowledged: " . ($acknowledged ? 'Yes' : 'No') . "\n
+    ";
+
+    // Send email
+    if (mail($to, $subject, $body)) {
+        echo "<h2 style='text-align:center; color: green;'>✅ Application submitted successfully!</h2>";
+    } else {
+        echo "<h2 style='text-align:center; color: red;'>❌ Application submitted but failed to send email.</h2>";
+    }
 } else {
     echo "<h2 style='color: red;'>❌ Error: " . $stmt->error . "</h2>";
 }
